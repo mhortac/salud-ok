@@ -1,0 +1,23 @@
+{
+  "name": "salud-ok",
+  "version": "1.0.0",
+  "description": "Proyecto de cristian",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhortac/salud-ok.git"
+  },
+  "author": "Cristian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mhortac/salud-ok/issues"
+  },
+  "homepage": "https://github.com/mhortac/salud-ok#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.3.0"
+  }
+}
