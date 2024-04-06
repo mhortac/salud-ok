@@ -1,19 +1,38 @@
+// Module dependencies.
 const express = require("express");
-const userController = require("./controllers/user");
+const mongoose = require("mongoose");
 
+const userController = require("./controllers/user");
 
 const app = express();
 
-// Default Endpoint
+
+/**
+ * Route: Home endpoint
+ */
 app.get("/", (req, res) => {
-    res.send("Hello World");
+    res.send("SALUD OK API REST");
 })
 
 
-// Default Endpoint
+/**
+ * Route: Create a user on data base.
+ */
 app.post("/user/create", userController.create)
 
 
-app.listen(3000, () => {
+/**
+ * Route: Create a user on data base.
+ */
+app.listen(3000,  () => {
     console.log("Service started");
+
+    try {
+        mongoose.connect("mongodb://localhost:27017/saludokdb");
+    } catch (error) {
+        console.error("Cristian Says: Error on db connection");
+    }
 })
+
+
+   

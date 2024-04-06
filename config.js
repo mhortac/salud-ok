@@ -1,6 +1,4 @@
-const models = require("./models")
-
 module.exports = {
-    uri: "mongodb+srv://"
+    uri: "mongodb://localhost:27017"
 }
 
