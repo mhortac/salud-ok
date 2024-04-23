@@ -2,11 +2,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
-const userController = require("./controllers/user");
+const UserController = require("./controllers/user");
 
 const app = express();
 
-
+//app.set('views', __dirname + '/views');
+app.use(express.static(__dirname + '/views'));
 /**
  * Route: Home endpoint
  */
@@ -18,7 +19,7 @@ app.get("/", (req, res) => {
 /**
  * Route: Create a user on data base.
  */
-app.post("/user/create", userController.create)
+app.post("/user/create", UserController.create)
 
 
 /**
