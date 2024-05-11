@@ -5,27 +5,35 @@ const mongoose = require("mongoose");
 const UserController = require("./controllers/user");
 
 const app = express();
+const frontend = express();
 
-//app.set('views', __dirname + '/views');
-app.use(express.static(__dirname + '/views'));
+
+frontend.use(express.static(__dirname + '/views'));
+
 /**
  * Route: Home endpoint
  */
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
     res.send("SALUD OK API REST");
 })
 
+/**
+ * Route: Create a user on data base.
+ */
+app.post("/api/user/create", UserController.create);
+
+/**
+ * Route: Do Login
+ */
+app.post("/api/user/login", UserController.login)
+
+
+
 
 /**
  * Route: Create a user on data base.
  */
-app.post("/user/create", UserController.create)
-
-
-/**
- * Route: Create a user on data base.
- */
-app.listen(3000,  () => {
+app.listen(3000, () => {
     console.log("Service started");
 
     try {
@@ -35,5 +43,8 @@ app.listen(3000,  () => {
     }
 })
 
+frontend.listen(3001, () => {
+    console.log("Service frontend started");
+})
 
-   
+

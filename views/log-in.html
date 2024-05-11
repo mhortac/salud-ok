@@ -28,7 +28,7 @@
           <input
             type="email"
             class="form-control"
-            id="floatingInput"
+            id="email"
             placeholder="correo@ejemplo.com"
           />
           <label for="floatingInput">Correo Electrónico</label>
@@ -37,7 +37,7 @@
           <input
             type="password"
             class="form-control"
-            id="floatingPassword"
+            id="password"
             placeholder="Contraseña"
           />
           <label for="floatingPassword">Contraseña</label>
@@ -54,7 +54,8 @@
             Recuerdame
           </label>
         </div>
-        <button class="btn btn-primary w-100 py-2" type="submit">
+
+        <button id="login_btn" class="btn btn-primary w-100 py-2" type="submit">
           Iniciar Sesión
         </button>
 
@@ -72,10 +73,49 @@
       crossorigin="anonymous"
     ></script>
 
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
+    <script>
+      // Main Code
+
+      let logInBntClick = (evt) => {
+        // Prevenir el comportamiento por defecto de un botón.
+        evt.preventDefault();
+
+        try {
+          var email = document.getElementById("email").value;
+          var password = document.getElementById("password").value;
+
+          if (!email) throw Error("Se requiere el campo: Correo");
+          if (!password) throw Error("Se requiere el campo: Contraseña");
+
+          var data = JSON.stringify({
+            email: email,
+            password: password,
+          });
+
+          sendRequest(data);
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
+      let sendRequest = (params) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: params,
+          mode: "no-cors",
+        };
+
+        fetch("http://127.0.0.1:3000/user/login", requestOptions)
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.log("error", error));
+      };
+      document.getElementById("login_btn").onclick = logInBntClick;
+    </script>
   </body>
 </html>
