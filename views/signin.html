@@ -22,36 +22,25 @@
         <main class="form-signin w-100 m-auto">
             <form>
                 <a class="saludok-logo w-100 mb-4" href="index.html">SaludOk</a>
-                <h1 class="h3 mb-3 fw-normal">Información de Registro</h1>
-
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="fullname" placeholder="" />
-                    <label for="floatingInput">Nombre Completo</label>
-                </div>
-
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="idnumber" placeholder="" />
-                    <label for="floatingInput">Identificación</label>
-                </div>
+                <h1 class="h3 mb-3 fw-normal">Por favor, Inicia Sesión</h1>
 
                 <div class="form-floating">
                     <input type="email" class="form-control" id="email" placeholder="correo@ejemplo.com" />
                     <label for="floatingInput">Correo Electrónico</label>
                 </div>
-
                 <div class="form-floating">
                     <input type="password" class="form-control" id="password" placeholder="Contraseña" />
                     <label for="floatingPassword">Contraseña</label>
                 </div>
 
                 <div class="form-check text-start my-3">
-                    <input class="form-check-input" type="checkbox" id="terms_conds" />
-                    <label class="form-check-label" for="flexCheckDefault"> Acepto los Terminos y Condiciones </label>
+                    <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
+                    <label class="form-check-label" for="flexCheckDefault"> Recuerdame </label>
                 </div>
 
-                <button class="btn btn-primary w-100 py-2" type="submit" id="btn_signup">Registrarme</button>
+                <button id="login_btn" class="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
 
-                <a class="btn btn-light px-3 mt-3 w-100" href="log-in.html"> Ya tengo una cuenta, iniciar Sesión </a>
+                <a class="btn btn-light px-3 mt-3 w-100" href="signup.html"> No tengo una cuenta, registrarme </a>
 
                 <p class="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
             </form>
@@ -66,32 +55,20 @@
         <script>
             // Main Code
 
-            let signUpBntClick = (evt) => {
+            let logInBntClick = (evt) => {
+                // Prevenir el comportamiento por defecto de un botón.
                 evt.preventDefault();
 
                 try {
-                    var fullname = document.getElementById('fullname').value;
-                    var idnumber = document.getElementById('idnumber').value;
                     var email = document.getElementById('email').value;
                     var password = document.getElementById('password').value;
-                    var terms_conds = document.getElementById('terms_conds').checked;
-
-                    if (!fullname) throw Error('Se requiere el campo: Nombre completo');
-
-                    if (!idnumber) throw Error('Se requiere el campo: Identificación');
 
                     if (!email) throw Error('Se requiere el campo: Correo');
-
                     if (!password) throw Error('Se requiere el campo: Contraseña');
 
-                    if (!terms_conds) throw Error('Se requiere aceptar los Terms & Conds');
-
                     var data = JSON.stringify({
-                        fullname: fullname,
-                        idnumber: idnumber,
                         email: email,
                         password: password,
-                        terms_conds: terms_conds,
                     });
 
                     sendRequest(data);
@@ -101,23 +78,23 @@
             };
 
             let sendRequest = (params) => {
+                var myHeaders = new Headers();
+                myHeaders.append('Accept', 'application/json');
+                myHeaders.append('Content-Type', 'application/json');
+
                 var requestOptions = {
                     method: 'POST',
+                    headers: myHeaders,
                     body: params,
-                    headers: { 'Content-type': 'application/json; charset=UTF-8' },
+                    mode: 'no-cors',
                 };
 
-                fetch('http://127.0.0.1:3000/api/user/create', requestOptions)
+                fetch('http://127.0.0.1:3000/api/auth/login', requestOptions)
                     .then((response) => response.text())
                     .then((result) => console.log(result))
                     .catch((error) => console.log('error', error));
             };
-            document.getElementById('btn_signup').onclick = signUpBntClick;
+            document.getElementById('login_btn').onclick = logInBntClick;
         </script>
-
-        <!-- Option 2: Separate Popper and Bootstrap JS -->
-        <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    --></body>
+    </body>
 </html>

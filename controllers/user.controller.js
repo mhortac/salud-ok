@@ -1,8 +1,11 @@
 const UserModel = require('../models/user');
 
 class UserController {
+    async create(req, res) {
+        const data = await UserModel.create(req.body);
+        return res.json(data);
+    }
 
-    
     async findId(req, res) {
         try {
             const data = await UserModel.findById(req.body.id);
@@ -13,54 +16,32 @@ class UserController {
             });
         }
     }
-    
+
     async findUpdateId(req, res) {
-       
         try {
             const id = req.params.id;
             const updatedData = req.body;
             const options = { new: true };
 
-            const result = await Model.findByIdAndUpdate(
-                id, updatedData, options
-            )
+            const result = await Model.findByIdAndUpdate(id, updatedData, options);
 
-            res.send(result)
+            res.send(result);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
         }
-        catch (error) {
-            res.status(400).json({ message: error.message })
-        }
-        
     }
     async findDeleteId(req, res) {
-       
-         try {
-            const id = req.params.id;
-            const data = await Model.findByIdAndDelete(id)
-            res.send(`Document with ${data.name} has been deleted..`)
-        }
-        catch (error) {
-            res.status(400).json({ message: error.message })
-        }
-        
-    }
-    
-    async create(req, res) {
         try {
-            const data = await UserModel.create(req.body);
-            return res.json(data);
+            const id = req.params.id;
+            const data = await Model.findByIdAndDelete(id);
+            res.send(`Document with ${data.name} has been deleted..`);
         } catch (error) {
-            res.status(500).send({
-                msg: error.message || 'Error al realizar la creacion de un usuario en base de datos',
-            });
+            res.status(400).json({ message: error.message });
         }
     }
 
     async login(req, res) {
-         const { email, password } = req.body;
-         const user = await User.findOne({ email }).select("+password +lastLoginAt");
-
-        console.log(req);
+        const { email, password } = req.body;
 
         if (!email && !password) {
             return res.status(200).send({ msg: 'Los campos son obligatorios' });
