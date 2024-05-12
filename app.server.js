@@ -2,7 +2,7 @@ const app = require('./app');
 const mongoose = require('mongoose');
 
 // Default Port
-const DEFAULT_PORT = 5000;
+const DEFAULT_PORT = 3000;
 
 /**
  * Route: Create a user on data base.

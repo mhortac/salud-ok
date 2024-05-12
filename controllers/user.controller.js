@@ -36,7 +36,7 @@ class UserController {
             const data = await Model.findByIdAndDelete(id);
             res.send(`Document with ${data.name} has been deleted..`);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(400).json({ ok: false, msg: error.message });
         }
     }
 
@@ -44,19 +44,19 @@ class UserController {
         const { email, password } = req.body;
 
         if (!email && !password) {
-            return res.status(200).send({ msg: 'Los campos son obligatorios' });
+            return res.status(400).send({ ok: false, msg: 'Los campos son obligatorios' });
         }
 
         let result = await UserModel.findOne({ email: email });
 
         if (result == null) {
-            return res.status(400).send({ msg: 'Usuario no existe en base de datos' });
+            return res.status(400).send({ ok: false, msg: 'Usuario no existe en base de datos' });
         }
 
         if (result.password == password) {
-            return res.status(200).send({ msg: 'Login exitoso' });
+            return res.status(200).send({ ok: true, msg: 'Login exitoso' });
         } else {
-            return res.status(200).send({ msg: 'Login fallido' });
+            return res.status(400).send({ ok: false, msg: 'Login fallido' });
         }
     }
 }
