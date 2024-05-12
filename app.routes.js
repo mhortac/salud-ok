@@ -26,7 +26,7 @@ Routes.delete('/api/user/delete/:id', () => {});
  */
 Routes.post('/api/booking/create', BookingController.create);
 Routes.get('/api/booking/:id', () => {});
-Routes.get('/api/booking/list', BookingController.list);
+Routes.get('/api/booking/list/:id', BookingController.list);
 Routes.put('/api/booking/update/:id', () => {});
 Routes.delete('/api/booking/delete/:id', () => {});
 

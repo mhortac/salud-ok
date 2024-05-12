@@ -33,7 +33,46 @@
         </style>
     </head>
 
-    <body class="d-flex h-100 text-center text-white bg-info">
+    <body class="d-flex h-100 text-center bg-info">
+       
+       
+        <!-- Vertically centered modal -->
+        <div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLiveLabel">AGENDAR CITA MÉDICA</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                           
+                             <div class="form-floating">
+                                <input type="date" class="form-control" id="booking_date" />
+                                <label for="booking_date">Fecha de Cita</label>
+                            </div>
+
+                            <div class="form-floating">                                
+                                <select class="form-control" id="specialist" required>
+                                    <option value="">Seleccionar</option>
+                                    <option>Odontología</option>
+                                    <option>Medicina General</option>
+                                    <option>Cardiología</option>
+                                    <option>Dermatología</option>
+                                    <option>Oftalmología</option>
+                                </select>
+                                <label for="specialist" class="form-label">Especialidad</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CERRAR</button>
+                        <button  id="bookBntClick" type="button" class="btn btn-primary" data-bs-dismiss="modal" >GUARDAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
             <header class="mb-auto">
                 <div>
@@ -47,33 +86,17 @@
             </header>
 
             <main class="px-3 rounded-3 bg-white">
-                <table class="table">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLive">Launch demo modal</button>
+                <table id="bookingtable" class="table">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Especialidad</th>
-                            <th scope="col">Profesional</th>
+                            <th scope="col">Fecha de solicitud</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
+                        
                     </tbody>
                 </table>
             </main>
@@ -91,6 +114,82 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"
         ></script>
+
+       <script type="module">
+            import { HttpClient } from './utils/http-client.js';
+
+            let bookBntClick = (evt) => {
+                // Prevenir el comportamiento por defecto de un botón.
+                evt.preventDefault();
+
+                try {
+                    const date = document.getElementById('booking_date').value;
+                    const specialist = document.getElementById('specialist').value;
+
+                    if (!date) throw Error('Se requiere el campo: Correo');
+                    if (!specialist) throw Error('Se requiere el campo: Contraseña');
+
+                    var params = JSON.stringify({ date, specialist });
+
+                    sendRequest(params);
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+
+            let sendRequest = (params) => {
+                HttpClient.send('POST', '/api/booking/create', params)
+                    .then((res) => res.json())
+                    .catch((error) => {
+                        alert('La creación de cita a fallado en el servidor!')
+                        console.log('Error:', error)
+                    })
+                    .then((response) => {
+                        if (response.ok) {
+                           alert("Cita creada exitosamente");
+                        } else {
+                            alert(response.msg ? response.msg : 'La creación de cita a fallado!');
+                        }
+                    });
+            };
+            
+            let listBooking = () => {
+                HttpClient.send('GET', '/api/booking/list/1111', undefined)
+                    .then((res) => res.json())
+                    .catch((error) => {
+                        alert('El historico de cita a fallado en el servidor!')
+                        console.log('Error:', error)
+                    })
+                    .then((response) => {
+                        //innerHTML 
+                        // se debe validar que exista el array
+                        let table = document.querySelector('tbody');
+                        response.forEach(element => {
+
+                            let tr = document.createElement('tr');
+                            
+                            let td1 = document.createElement('td');
+                            let td2 = document.createElement('td');
+                            let td3 = document.createElement('td');
+
+                            td1.innerHTML = element.data;
+                            td2.innerHTML = element.specialist;
+                            td3.innerHTML = element.created_at;
+
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+
+                            table.appendChild(tr)
+                        });
+                        
+                    });
+            };
+
+            listBooking();
+
+            document.getElementById('bookBntClick').onclick = bookBntClick;
+        </script>
 
         <!-- Option 2: Separate Popper and Bootstrap JS -->
         <!--

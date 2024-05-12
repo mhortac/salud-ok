@@ -2,7 +2,11 @@ const BookingModel = require('../models/booking.model');
 
 class BookingController {
     async create(req, res) {
-        const data = await BookingModel.create(req.body);
+        // Gets current date
+        let created_at = Date.now();
+        let params = {...req.body, created_at, iduser: "1111"}
+
+        const data = await BookingModel.create(params);
         return res.json(data);
     }
 
