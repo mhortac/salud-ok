@@ -16,6 +16,8 @@
             crossorigin="anonymous"
         />
         <link href="./styles/log-in.css" rel="stylesheet" />
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     </head>
 
     <body class="d-flex align-items-center py-4 bg-body-tertiary bg-info">
@@ -41,6 +43,13 @@
                 <button id="login_btn" class="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
 
                 <a class="btn btn-light px-3 mt-3 w-100" href="signup.html"> No tengo una cuenta, registrarme </a>
+
+                <div id="g_id_onload"
+                    data-client_id="625527679729-gqrpf073oot8kk1p8igip3l00k6fp21a.apps.googleusercontent.com"
+                    data-login_uri="https://www.example.com/your_login_endpoint"
+                    data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin px-3 mt-3 w-100" data-type="standard"></div>
 
                 <p class="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
             </form>
@@ -84,6 +93,17 @@
             };
 
             document.getElementById('login_btn').onclick = logInBntClick;
+
+            
+
         </script>
+
+        <script>
+            function handleCredentialResponse(params) {
+                console.log(params);    
+            }
+        </script>
+
+        <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
     </body>
 </html>
