@@ -4,7 +4,8 @@ class BookingController {
     async create(req, res) {
         // Gets current date
         let created_at = Date.now();
-        let params = {...req.body, created_at, iduser: "1111"}
+        // TODO: CAMBIAR EL ID DEL USUARIO
+        let params = { ...req.body, created_at, iduser: '1111' };
 
         const data = await BookingModel.create(params);
         return res.json(data);
