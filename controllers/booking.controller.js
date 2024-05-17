@@ -2,7 +2,7 @@ const BookingModel = require('../models/booking.model');
 
 class BookingController {
     async create(req, res) {
-        if (!req.user) return res.status(401).json({ ok: false, message: 'Unauthorized user!!' });
+        if (!req.user) return res.status(401).json({ ok: false, message: 'Unauthorized user' });
 
         // Gets current date
         let created_at = Date.now();
@@ -14,7 +14,7 @@ class BookingController {
     }
 
     async list(req, res) {
-        if (!req.user) return res.status(401).json({ ok: false, message: 'Unauthorized user!!' });
+        if (!req.user) return res.status(401).json({ ok: false, message: 'Unauthorized user' });
 
         const data = await BookingModel.find({ iduser: req.user._id });
         return res.json(data);
