@@ -9,28 +9,9 @@
         <title>Salud Ok By Cris</title>
 
         <!-- Bootstrap CSS -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-            crossorigin="anonymous"
-        />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link href="./styles/cover.css" rel="stylesheet" />
-        <style>
-            .bd-placeholder-img {
-                font-size: 1.125rem;
-                text-anchor: middle;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                user-select: none;
-            }
-
-            @media (min-width: 768px) {
-                .bd-placeholder-img-lg {
-                    font-size: 3.5rem;
-                }
-            }
-        </style>
+        <link href="./styles/booking.css" rel="stylesheet" />
     </head>
 
     <body class="d-flex h-100 text-center bg-info">
@@ -75,19 +56,28 @@
                 <div>
                     <h3 class="float-md-start mb-0">SALUDOK</h3>
                     <nav class="nav nav-masthead justify-content-center float-md-end">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        <a class="nav-link" href="signin.html">Iniciar Sesión</a>
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link active" aria-current="page" id="user-mail"></a>
+                        <a class="nav-link active" aria-current="page" id="closeBtnClick">Cerrar Sesión</a>
                     </nav>
                 </div>
             </header>
 
-            <main class="px-3 rounded-3 bg-white">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLive">Launch demo modal</button>
-                <table id="bookingtable" class="table">
+            <main class="px-3">
+                <div class="toolbar my-4 container text-center">
+                    <div class="row fs-3 text-start">
+                        <div class="welcome col-8">Bienvenido <span id="user"> -- </span></div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+                                CREAR CITA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="bookingtable" class="table rounded-3 bg-white table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Fecha</th>
+                            <th scope="col">Fecha de Cita</th>
                             <th scope="col">Especialidad</th>
                             <th scope="col">Fecha de solicitud</th>
                         </tr>
@@ -104,15 +94,13 @@
             </footer>
         </div>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"
-        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <script type="module">
             import { HttpClient } from './utils/http-client.js';
+            import { getKey, getUser } from './utils/store.js';
 
+            // Definiciones de funciones
             let bookBntClick = (evt) => {
                 // Prevenir el comportamiento por defecto de un botón.
                 evt.preventDefault();
@@ -132,61 +120,84 @@
                 }
             };
 
+            let insertIntoTable = (rows) => {
+                let table = document.querySelector('tbody');
+
+                rows.forEach((row) => {
+                    let tr = document.createElement('tr');
+
+                    let td1 = document.createElement('td');
+                    let td2 = document.createElement('td');
+                    let td3 = document.createElement('td');
+
+                    td1.innerHTML = new Date(row.date).toLocaleDateString();
+                    td2.innerHTML = row.specialist;
+                    td3.innerHTML = new Date(row.created_at).toLocaleDateString();
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+
+                    table.appendChild(tr);
+                });
+            };
+
             let sendRequest = (params) => {
                 HttpClient.send('POST', '/api/booking/create', params)
                     .then((res) => res.json())
-                    .catch((error) => {
-                        alert('La creación de cita a fallado en el servidor!');
-                        console.log('Error:', error);
-                    })
                     .then((response) => {
                         if (response.ok) {
                             alert('Cita creada exitosamente');
+                            insertIntoTable([response.data]);
                         } else {
                             alert(response.msg ? response.msg : 'La creación de cita a fallado!');
                         }
+                    })
+                    .catch((error) => {
+                        alert('La creación de cita a fallado en el servidor!');
+                        console.log('Error:', error);
                     });
             };
 
             let listBooking = () => {
-                HttpClient.send('GET', '/api/booking/list/1111', undefined)
+                HttpClient.send('GET', '/api/booking/list', undefined)
                     .then((res) => res.json())
+                    .then((response) => {
+                        insertIntoTable(response);
+                    })
                     .catch((error) => {
                         alert('El historico de cita a fallado en el servidor!');
                         console.log('Error:', error);
-                    })
-                    .then((response) => {
-                        //innerHTML
-                        // se debe validar que exista el array
-                        let table = document.querySelector('tbody');
-                        response.forEach((element) => {
-                            let tr = document.createElement('tr');
-
-                            let td1 = document.createElement('td');
-                            let td2 = document.createElement('td');
-                            let td3 = document.createElement('td');
-
-                            td1.innerHTML = element.data;
-                            td2.innerHTML = element.specialist;
-                            td3.innerHTML = element.created_at;
-
-                            tr.appendChild(td1);
-                            tr.appendChild(td2);
-                            tr.appendChild(td3);
-
-                            table.appendChild(tr);
-                        });
                     });
             };
 
-            listBooking();
+            let sessionValidate = () => {
+                return !!getKey();
+            };
+
+            let showUserOnsession = () => {
+                let user = getUser();
+                document.querySelector('#user').innerHTML = user.fullname;
+                document.querySelector('#user-mail').innerHTML = user.email;
+            };
+
+            let closeSession = () => {
+                localStorage.removeItem('usr');
+                localStorage.removeItem('tk');
+                window.location.href = './signin.html';
+            };
+
+            if (sessionValidate()) {
+                showUserOnsession();
+                listBooking();
+            } else {
+                alert('Los sentimos, no ha iniciado sesión');
+                // Redireccionamos el usuario iniciar sesion
+                window.location.href = './signin.html';
+            }
 
             document.getElementById('bookBntClick').onclick = bookBntClick;
+            document.getElementById('closeBtnClick').onclick = closeSession;
         </script>
-
-        <!-- Option 2: Separate Popper and Bootstrap JS -->
-        <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    --></body>
+    </body>
 </html>

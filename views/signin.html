@@ -54,6 +54,7 @@
 
         <script type="module">
             import { HttpClient } from './utils/http-client.js';
+            import { setKey, setUser } from './utils/store.js';
 
             let logInBntClick = (evt) => {
                 // Prevenir el comportamiento por defecto de un botón.
@@ -68,6 +69,7 @@
 
                     var params = JSON.stringify({ email, password });
 
+                    // Llamamos a la función  sendRequest para realizar la petición
                     sendRequest(params);
                 } catch (error) {
                     alert(error.message);
@@ -79,10 +81,14 @@
                     .then((res) => res.json())
                     .then((response) => {
                         if (response.ok) {
-                            localStorage.setItem('tk', response.token);
+                            // Almacenamos la llave de la sesi[on]
+                            setKey(response.token);
+                            // Guardamos los datos del usuario
+                            setUser(response.user);
+                            // Redireccionamos el usuario a la gestión de citas
                             window.location.href = './bookings.html';
                         } else {
-                            alert(response.msg ? response.msg : '¡Login fallido!');
+                            alert(response.message ? response.message : '¡Login fallido!');
                         }
                     });
             };

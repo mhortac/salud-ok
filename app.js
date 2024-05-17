@@ -20,11 +20,17 @@ app.use(bodyParser.json());
  * */
 app.use(express.static(__dirname + '/views'));
 
+/* *
+ * Interceptor.
+ * */
 app.use((req, res, next) => {
-    if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-        jsonwebtoken.verify(req.headers.authorization.split(' ')[1], 'RESTFULAPIs', function (err, decode) {
-            console.log(decode);
-            if (err) req.user = undefined;
+    if (req.headers && req.headers.authorization) {
+        // Verificar la llave de autenticación
+        jsonwebtoken.verify(req.headers.authorization, 'RESTFULAPIs', function (err, decode) {
+            if (!!err) {
+                console.log('La llave es invalida');
+                req.user = undefined;
+            }
             req.user = decode;
             next();
         });

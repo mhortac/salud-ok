@@ -1,3 +1,5 @@
+import { getKey } from './store.js';
+
 export const HOST = 'http://127.0.0.1:3000';
 
 export const HttpClient = {
@@ -5,6 +7,10 @@ export const HttpClient = {
         const headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
+
+        if (!!getKey()) {
+            headers.append('authorization', getKey());
+        }
 
         const requestOptions = {
             method: method,

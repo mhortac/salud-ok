@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, unique: true, lowercase: true, trim: true, required: true },
     password: { type: String, required: true },
     created: { type: Date, default: Date.now },
-    terms_conds: { type: String},
+    terms_conds: { type: String },
 });
 
 UserSchema.methods.comparePassword = function (password) {
